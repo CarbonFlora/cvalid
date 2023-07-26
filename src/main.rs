@@ -4,5 +4,5 @@ use anyhow::Result;
 use diflora::features::verify_sheets;
 
 fn main() -> Result<()> {
-    Ok(verify_sheets().flush()?)
+    Ok(verify_sheets()?.flush()?)
 }
