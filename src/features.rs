@@ -13,10 +13,11 @@ pub fn verify_sheets() -> Result<BufWriter<Stdout>> {
     let mut buffer = BufWriter::new(io::stdout());
     let mut file_success = vec![];
     let mut file_failure = vec![];
-    
+    let mut job_number = HashMap::new(); //dupe information, dupe location
+
     // let paths = args.input_sheet.iter().map(|x| x.to_uppercase()).collect::<Vec<String>>();
     for path in args.input_sheet {
-        match check_excel(&path) {
+        match check_excel(&path, &mut job_number) {
             Ok(w) => file_success.push((path, w)),
             Err(e) => file_failure.push((path, e)),
         }
@@ -30,10 +31,10 @@ pub fn verify_sheets() -> Result<BufWriter<Stdout>> {
     Ok(buffer)
 }
 
-fn check_excel(path: &String) -> Result<Vec<ErrorPair>> {
+fn check_excel(path: &String, job_number: &mut HashMap<String, String>) -> Result<Vec<ErrorPair>> {
     let mut workbook: Xlsx<_> = open_workbook(path)?;
     let mut error_pairs = vec![];
-    let mut job_number = HashMap::new(); //dupe information, dupe location
+    
     // let mut invoice_number = HashMap::new();
     // let mut ref_number = HashMap::new();
 
