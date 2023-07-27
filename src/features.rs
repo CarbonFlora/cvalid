@@ -8,7 +8,7 @@ use calamine::{Reader, open_workbook, Xlsx, DataType};
 
 type ErrorPair = (String, String);
 
-pub fn verify_sheets() -> Result<BufWriter<Stdout>> {
+pub fn verify_sheets() -> Result<()> {
     let args = DIFloraArgs::parse();
     let mut buffer = BufWriter::new(io::stdout());
     let mut file_success = vec![];
@@ -27,8 +27,8 @@ pub fn verify_sheets() -> Result<BufWriter<Stdout>> {
     let (success, dupe) = write_to_buffer_error_pair(file_success, &mut buffer)?; 
     write_to_buffer_summary(skipped, (success, dupe), &mut buffer)?;
     
-
-    Ok(buffer)
+    buffer.flush()?;
+    Ok(())
 }
 
 fn check_excel(args: &DIFloraArgs, path: &String, job_number: &mut HashMap<String, String>) -> Result<Vec<ErrorPair>> {
