@@ -89,7 +89,7 @@ impl Application for CValid {
         match self {
             CValid::Main(main_inputs) => {
                 let title = header_group();
-                let body = column![input_group(main_inputs)]; //, output_group(main_inputs)
+                let body = column![input_group(main_inputs), output_group(main_inputs)]; //, output_group(main_inputs)
 
                 scrollable(
                     container(column![title, body].spacing(10))
@@ -114,10 +114,11 @@ fn header_group<'a>() -> Column<'a, Message> {
 
 fn input_group(main_inputs: &MainInputs) -> Column<Message> {
     let h_s = 5;
+
     
     let choose_files = button(text("?"))
         .on_press(Message::SelectFiles);
-    // let display_files = text(format!("{}", ));
+    let display_files = text(format!("Selected Files: {}", display_files(&main_inputs)));
     let column_index = text_input("#", &main_inputs.column_index)
         .on_input(Message::InputColumnIndex);
     let row_skip = text_input("#", &main_inputs.row_skip)
@@ -125,7 +126,7 @@ fn input_group(main_inputs: &MainInputs) -> Column<Message> {
     let worksheet_skip = text_input("#", &main_inputs.worksheet_skip)
         .on_input(Message::InputWorksheetSkip);
     
-    let row_1 = row![choose_files, text(format!("{:?}", &main_inputs.files).as_str())].spacing(h_s);
+    let row_1 = row![choose_files, display_files].spacing(h_s);
     let row_2 = row![text("Column:"), column_index, text("# Rows Skipped:"), row_skip, text("# Worksheets Skipped:"), worksheet_skip].spacing(h_s);
 
     column![row_1, row_2]
