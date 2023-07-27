@@ -2,7 +2,7 @@ use clap::Parser;
 
 /// Simple program to verify workbook data integrity.
 #[derive(Parser, Debug)]
-#[command(author="Zi Hao L.", version="0.2.0", about="Workbook Data Integrity Check.", long_about = None)]
+#[command(author="Zi Hao L.", version="1.0.0", about="Workbook Data Integrity Check.", long_about = None)]
 pub struct DIFloraArgs {
     // /// Print duplicates or conflicts
     // #[arg(short, long, default_value_t = false)]

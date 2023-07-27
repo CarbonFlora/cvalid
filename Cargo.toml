@@ -1,14 +1,13 @@
 [package]
 name = "cvalid"
-version = "0.2.0"
+version = "1.0.0"
 edition = "2021"
 authors = ["Zi Hao L."]
 description = "Workbook Data Integrity Check."
 readme = "README.md"
 homepage = "https://github.com/CarbonFlora/cvalid"
 repository = "https://github.com/CarbonFlora/cvalid"
-keywords = ["cli", "search", "excel"]
-categories = ["command-line-utilities"]
+keywords = ["gui", "search", "excel"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
