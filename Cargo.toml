@@ -1,6 +1,6 @@
 [package]
 name = "cvalid"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 authors = ["Zi Hao L."]
 description = "Workbook Data Integrity Check."
