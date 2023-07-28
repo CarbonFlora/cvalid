@@ -1,5 +1,5 @@
 use iced::widget::{column, text, Column};
-use anyhow::{Result, Error};
+use anyhow::{Result, Error, anyhow};
 
 use crate::gui::*;
 use std::collections::HashMap;
@@ -55,23 +55,26 @@ impl MainInputs {
 
         for (worksheet_name, worksheet) in workbook.worksheets().iter().skip(self.worksheet_skip.parse::<usize>()?) {
             for (row_index, row) in worksheet.rows().enumerate().skip(self.row_skip.parse::<usize>()?) {
-                self.crawl(row, &cut_path, job_number, &worksheet_name, &row_index, &mut error_pairs, &check_columns);
+                self.crawl(row, &cut_path, job_number, &worksheet_name, &row_index, &mut error_pairs, &check_columns)?;
             } 
         }
     
         Ok(error_pairs)
     }
     
-    fn crawl(&self, row: &[DataType], path: &String, job_number: &mut HashMap<String, String>, worksheet_name: &String, row_index: &usize, error_pairs: &mut Vec<ErrorPair>, check_columns: &Vec<usize>) {
+    fn crawl(&self, row: &[DataType], path: &String, job_number: &mut HashMap<String, String>, worksheet_name: &String, row_index: &usize, error_pairs: &mut Vec<ErrorPair>, check_columns: &Vec<usize>) -> Result<()> {
         for col_index in check_columns {
-            if let Some(next_entry) = row[*col_index].as_string() {
-                let dir_text = format!("{path}/{worksheet_name}/Row #{row_index}/{}", next_entry.clone());
+            if let Some(next_entry) = row.get(*col_index) {
+                let dir_text = format!("{path}/{worksheet_name}/Row #{row_index}/{}", next_entry.to_string().clone());
         
-                if let Some(dir_dupe) = job_number.insert(next_entry.clone(), dir_text.clone()) { 
+                if let Some(dir_dupe) = job_number.insert(next_entry.to_string().clone(), dir_text.clone()) { 
                     error_pairs.push((dir_dupe, dir_text));
                 }
-            } 
+            } else {
+                return Err(anyhow!("Specified column doesn't correspond to any information."))
+            }
         }
+        Ok(())
     }
     
     fn write_to_buffer_file_failure(&self, file_failure: Vec<(String, Error)>, buffer: &mut String) -> Result<usize> {
