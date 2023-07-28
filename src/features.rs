@@ -50,7 +50,7 @@ pub fn check_excel(args: &DIFloraArgs, path: &String, job_number: &mut HashMap<S
 fn crawl(row: &[DataType], path: &String, job_number: &mut HashMap<String, String>, worksheet_name: &String, row_index: &usize, error_pairs: &mut Vec<ErrorPair>, check_columns: &Vec<usize>) {
     for col_index in check_columns {
         if let Some(next_entry) = row[*col_index].as_string() {
-            let dir_text = format!("{path}/{worksheet_name}/Row #{row_index}/{}", next_entry.clone());
+            let dir_text = format!("{path}/{worksheet_name}/Row {}/{}", row_index+1, next_entry.clone());
     
             if let Some(dir_dupe) = job_number.insert(next_entry.clone(), dir_text.clone()) { 
                 error_pairs.push((dir_dupe, dir_text));
@@ -79,11 +79,11 @@ fn write_to_buffer_error_pair(file_success: Vec<(String, Vec<ErrorPair>)>, buffe
 
 fn write_to_buffer_summary(f: usize, s: (usize, usize), buffer: &mut BufWriter<Stdout>) -> Result<()> {
     if f > 0 {
-        writeln!(buffer, "?: Number of Skipped Files = {}", f).unwrap();
+        writeln!(buffer, "\nNumber of Skipped Files = {}", f).unwrap();
     }
     if s.0 > 0 {
-        writeln!(buffer, "?: Number of Read Files = {}", s.0)?;
-        writeln!(buffer, "?: Number of Duplicates = {}", s.1)?;
+        writeln!(buffer, "\nNumber of Read Files = {}", s.0)?;
+        writeln!(buffer, "Number of Duplicates = {}", s.1)?;
     }
 
     Ok(())

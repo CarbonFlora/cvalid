@@ -47,8 +47,8 @@ impl Application for CValid {
             CValid::Main(
                 MainInputs { 
                     files: vec![], 
-                    column_index: "5".to_string(), 
-                    row_skip: "2".to_string(), 
+                    column_index: "6".to_string(), 
+                    row_skip: "3".to_string(), 
                     worksheet_skip: "0".to_string() 
                 }),
             Command::none(),
