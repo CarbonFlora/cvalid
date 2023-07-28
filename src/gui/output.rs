@@ -65,7 +65,7 @@ impl MainInputs {
     fn crawl(&self, row: &[DataType], path: &String, job_number: &mut HashMap<String, String>, worksheet_name: &String, row_index: &usize, error_pairs: &mut Vec<ErrorPair>, check_columns: &Vec<usize>) -> Result<()> {
         for col_index in check_columns {
             if let Some(next_entry) = row.get(*col_index) {
-                let dir_text = format!("{path}/{worksheet_name}/Row #{row_index}/{}", next_entry.to_string().clone());
+                let dir_text = format!("{path}/{worksheet_name}/Row #{}/{}", row_index+1, next_entry.to_string().clone());
         
                 if let Some(dir_dupe) = job_number.insert(next_entry.to_string().clone(), dir_text.clone()) { 
                     error_pairs.push((dir_dupe, dir_text));
