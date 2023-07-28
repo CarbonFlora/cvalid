@@ -2,7 +2,7 @@ use clap::Parser;
 
 /// Simple program to greet a person
 #[derive(Parser, Debug)]
-#[command(author="Zi Hao L.", version="0.1.0", about="Proprietary Workbook Data Integrity Check.", long_about = None)]
+#[command(author="Zi Hao L.", version="0.2.1", about="Workbook Data Integrity Check.", long_about = None)]
 pub struct DIFloraArgs {
     // /// Print duplicates or conflicts
     // #[arg(short, long, default_value_t = false)]
