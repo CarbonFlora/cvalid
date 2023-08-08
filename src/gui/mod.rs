@@ -1,8 +1,9 @@
 // use std::path::PathBuf;
 
 use iced::alignment::{self};
+use iced::font::{self, Font};
 use iced::theme::Theme;
-use iced::widget::{button, column, container, row, scrollable, text, text_input, Column};
+use iced::widget::{button, column, container, row, scrollable, text, text_input, Column, Text};
 use iced::{Application, Element};
 use iced::{Color, Command, Length};
 // use once_cell::sync::Lazy;
@@ -13,6 +14,7 @@ pub mod search;
 use self::output::*;
 use self::search::*;
 
+const H_S: u16 = 5;
 // static INPUT_ID: Lazy<text_input::Id> = Lazy::new(text_input::Id::unique);
 
 #[derive(Debug)]
@@ -30,6 +32,7 @@ pub struct MainInputs {
 
 #[derive(Debug, Clone)]
 pub enum Message {
+    FontLoaded(Result<(), font::Error>),
     SelectFiles,
     InputColumnIndex(String),
     InputRowSkip(String),
@@ -44,14 +47,16 @@ impl Application for CValid {
 
     fn new(_flags: ()) -> (CValid, Command<Message>) {
         (
-            CValid::Main(
-                MainInputs { 
-                    files: vec![], 
-                    column_index: "6".to_string(), 
-                    row_skip: "3".to_string(), 
-                    worksheet_skip: "0".to_string() 
-                }),
-            Command::none(),
+            CValid::Main(MainInputs {
+                files: vec![],
+                column_index: "6".to_string(),
+                row_skip: "3".to_string(),
+                worksheet_skip: "0".to_string(),
+            }),
+            Command::batch([font::load(
+                include_bytes!("../../fonts/Byom-Icons-Trial.ttf").as_slice(),
+            )
+            .map(Message::FontLoaded)]),
         )
     }
 
@@ -62,26 +67,23 @@ impl Application for CValid {
     fn update(&mut self, message: Message) -> Command<Message> {
         match self {
             CValid::Main(main_inputs) => {
-                let command = match message {
+                match message {
                     Message::SelectFiles => {
                         main_inputs.files = search_files();
-                        Command::none()
-                    },
+                    }
                     Message::InputColumnIndex(raw_input) => {
                         main_inputs.column_index = raw_input;
-                        Command::none()
-                    },
+                    }
                     Message::InputRowSkip(raw_input) => {
                         main_inputs.row_skip = raw_input;
-                        Command::none()
-                    },
+                    }
                     Message::InputWorksheetSkip(raw_input) => {
                         main_inputs.worksheet_skip = raw_input;
-                        Command::none()
                     }
+                    _ => (),
                 };
-                Command::batch(vec![command])
-            },
+                Command::none()
+            }
         }
     }
 
@@ -98,7 +100,7 @@ impl Application for CValid {
                         .center_x(),
                 )
                 .into()
-            },
+            }
         }
     }
 }
@@ -113,21 +115,26 @@ fn header_group<'a>() -> Column<'a, Message> {
 }
 
 fn input_group(main_inputs: &MainInputs) -> Column<Message> {
-    let h_s = 5;
-
-    
-    let choose_files = button(text("?"))
+    let choose_files = button(exit_icon().horizontal_alignment(alignment::Horizontal::Center))
+        .width(42)
         .on_press(Message::SelectFiles);
-    let display_files = text(format!("Selected Files: {}", display_files(&main_inputs)));
-    let column_index = text_input("#", &main_inputs.column_index)
-        .on_input(Message::InputColumnIndex);
-    let row_skip = text_input("#", &main_inputs.row_skip)
-        .on_input(Message::InputRowSkip);
-    let worksheet_skip = text_input("#", &main_inputs.worksheet_skip)
-        .on_input(Message::InputWorksheetSkip);
-    
-    let row_1 = row![choose_files, display_files].spacing(h_s);
-    let row_2 = row![text("Column:"), column_index, text("# Rows Skipped:"), row_skip, text("# Worksheets Skipped:"), worksheet_skip].spacing(h_s);
+    let display_files = text(format!("Selected Files: {}", display_files(main_inputs)));
+    let column_index =
+        text_input("#", &main_inputs.column_index).on_input(Message::InputColumnIndex);
+    let row_skip = text_input("#", &main_inputs.row_skip).on_input(Message::InputRowSkip);
+    let worksheet_skip =
+        text_input("#", &main_inputs.worksheet_skip).on_input(Message::InputWorksheetSkip);
+
+    let row_1 = row![choose_files, display_files].spacing(H_S);
+    let row_2 = row![
+        text("Column:"),
+        column_index,
+        text("# Rows Skipped:"),
+        row_skip,
+        text("# Worksheets Skipped:"),
+        worksheet_skip
+    ]
+    .spacing(H_S);
 
     column![row_1, row_2]
         .spacing(10)
@@ -135,3 +142,33 @@ fn input_group(main_inputs: &MainInputs) -> Column<Message> {
         .padding(10)
 }
 
+const ICONS2: Font = Font::with_name("Byom Icons");
+
+fn icon2(unicode: char) -> Text<'static> {
+    text(unicode.to_string())
+        .font(ICONS2)
+        .horizontal_alignment(alignment::Horizontal::Center)
+        .width(20)
+}
+
+fn exit_icon() -> Text<'static> {
+    icon2('\u{2e}')
+}
+
+fn exclam_icon() -> Text<'static> {
+    icon2('\u{21}')
+}
+
+// fn good_check_icon() -> Text<'static> {
+//     icon2('\u{56}')
+// }
+
+fn notification_icon() -> Text<'static> {
+    icon2('\u{49}')
+}
+
+const SUBTITLE_SIZE: u16 = 22;
+
+fn subtitle(str: &str) -> Text<'static> {
+    text(str).size(SUBTITLE_SIZE)
+}

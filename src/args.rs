@@ -4,10 +4,6 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 #[command(author="Zi Hao L.", version="1.0.2", about="Workbook Data Integrity Check.", long_about = None)]
 pub struct DIFloraArgs {
-    // /// Print duplicates or conflicts
-    // #[arg(short, long, default_value_t = false)]
-    // pub verbose: bool,
-
     /// Specify a specific column
     #[arg(short, long, default_value_t = 5)]
     pub column: usize,
