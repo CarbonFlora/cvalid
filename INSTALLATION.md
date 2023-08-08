@@ -1,4 +1,4 @@
 # Installation
 ------------
-Easiest:\
-Clone the repository and cargo install the crate. 
+Easiest:
+Under "Releases", download the executable file.
