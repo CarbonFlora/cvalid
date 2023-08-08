@@ -1,4 +1,4 @@
 # Installation
 ------------
-Easiest:\
+Easiest:
 Under "Releases", download the executable file.
